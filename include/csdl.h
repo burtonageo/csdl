@@ -99,7 +99,6 @@ csdl_msgbox*            csdl_create_msgbox(void);
  * @param alert_type The message box alert type.
  *
  * @return The result of the function.
- *
  */
 CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*     box,
                                          const wchar_t*   title,
