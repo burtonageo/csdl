@@ -107,7 +107,8 @@ CSDL_MSGBOX_USER_RESULT csdl_show_msgbox(const csdl_msgbox* message_box)
       cocoa_alert_style = NSCriticalAlertStyle;
       break;
     case T_INFO:
-    case T_NOTYPE: /* fall-through */
+    case T_QUESTION: /* fall-through */
+    case T_NOTYPE:   /* fall-through */
       cocoa_alert_style = NSInformationalAlertStyle
       break;
   }

@@ -50,6 +50,7 @@ enum CSDL_MSGBOX_TYPE {
   T_NOTYPE,            /**< a blank message box */
   T_INFO,              /**< an information alert box */
   T_WARN,              /**< a message box with a warning */
+  T_QUESTION           /**< a message box with a question */
   T_ERROR              /**< a message box used to display an error */
 };
 
