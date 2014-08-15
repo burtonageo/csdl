@@ -78,7 +78,7 @@ enum CSDL_MSGBOX_INIT_RESULT {
  */
 typedef struct csdl_msgbox csdl_msgbox;
 
-/**/Users/georgeburton/Projects/CPP/CSDL/include/README.md
+/**
  * Creates a csdl_msgbox pointer with uninitialised values.
  * 
  *  @return A pointer to the created csdl_message box. This
