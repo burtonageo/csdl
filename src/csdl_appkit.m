@@ -75,10 +75,15 @@ CSDL_MSGBOX_USER_RESULT csdl_show_msgbox(const csdl_msgbox* message_box)
     return R_NORESPONSE;
   }
 
-  /*
-    I need to check whether I need a valid NSApplication here to
-    show the NSAlert. Things might fail here, otherwise :-/
-  */
+  NSApplication* application = [NSApplication sharedApplication];
+  if (application == nil) { /* for some reason, sharedApplication is nil
+                               panic instead of handling errors properly */
+    return R_NORESPONSE;
+  }
+
+  if (!application.isRunning) {
+    [application run];
+  }
 
   NSAlert* alert = [NSAlert new];
   alert.messageText = message_box.title;
