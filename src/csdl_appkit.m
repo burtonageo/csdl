@@ -89,13 +89,13 @@ CSDL_MSGBOX_USER_RESULT csdl_show_msgbox(const csdl_msgbox* message_box)
   alert.messageText = message_box.title;
   alert.informativeText = message_box.message;
 
-  [alert addButtonWithTitle: message_box.primary_btn_text]
+  [alert addButtonWithTitle: message_box.primary_btn_text];
 
   if (message_box.cancel_btn_text != nil) {
-    [alert addButtonWithTitle: message_box.cancel_btn_text]
+    [alert addButtonWithTitle: message_box.cancel_btn_text];
   }
   if (message_box.altern_btn_text != nil) {
-    [alert addButtonWithTitle: message_box.altern_btn_text]
+    [alert addButtonWithTitle: message_box.altern_btn_text];
   }
 
   NSAlertStyle cocoa_alert_style;
