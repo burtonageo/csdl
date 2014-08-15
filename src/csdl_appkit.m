@@ -76,7 +76,7 @@ CSDL_MSGBOX_USER_RESULT csdl_show_msgbox(const csdl_msgbox* message_box)
   }
 
   NSApplication* application = [NSApplication sharedApplication];
-  if (application == nil) { /* for some reason, sharedApplication is nil
+  if (application == nil) { /* if for some reason sharedApplication is nil,
                                panic instead of handling errors properly */
     return R_NORESPONSE;
   }
