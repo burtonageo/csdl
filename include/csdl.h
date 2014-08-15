@@ -43,6 +43,8 @@ extern "C" {
 
 /**
  * Represents what sort of message box should be created.
+ * If one of these types is not present, then the closest
+ * alternative in meaning is used.
  */
 enum CSDL_MSGBOX_TYPE {
   T_NOTYPE,            /**< a blank message box */
