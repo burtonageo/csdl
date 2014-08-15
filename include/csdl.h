@@ -5,16 +5,24 @@
  *
  * @section LICENSE
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details at
- * http://www.gnu.org/copyleft/gpl.html
+ * THIS SOFTWARE IS PROVIDED 'AS-IS', WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTY. IN NO EVENT WILL THE AUTHORS BE HELD LIABLE FOR ANY DAMAGES
+ * ARISING FROM THE USE OF THIS SOFTWARE.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,  
+ * including commercial applications, and to alter it and redistribute it  
+ * freely, subject to the following restrictions:
+ * 
+ *    1. The origin of this software must not be misrepresented; you must not  
+ *       claim that you wrote the original software. If you use this software  
+ *       in a product, an acknowledgment in the product documentation would be  
+ *       appreciated but is not required.
+ * 
+ *    2. Altered source versions must be plainly marked as such, and must not be  
+ *       misrepresented as being the original software.
+ * 
+ *    3. This notice may not be removed or altered from any source  
+ *       distribution.
  *
  * @section DESCRIPTION
  *
@@ -25,7 +33,10 @@
 #ifndef CSDL_H
 #define CSDL_H
 
+#ifndef __cplusplus__
 #include <wchar.h>
+#include <stdbool.h>
+#endif
 
 #ifdef __cplusplus__
 extern "C" {
@@ -45,33 +56,35 @@ enum CSDL_MSGBOX_TYPE {
  * Represents which button the program user clicked on
  */
 enum CSDL_MSGBOX_USER_RESULT {
-  R_PRIMARY,           /**< the primary action */
-  R_CANCEL,            /**< a cancelled action */
-  R_ALTERN,            /**< an alternate action */
-  R_NORESPONSE         /**< this result means that the message box
-                            could not be shown, and should not normally
-                            occur. */
+  R_PRIMARY,           /**< the ok/action button */
+  R_CANCEL,            /**< the cancel button */
+  R_ALTERN,            /**< an alternate button */
+  R_NORESPONSE         /**< this result means that the user did not have
+                            an opportunity to give a response, and should
+                            not normally occur. */
 };
 
 /**
  * A message box initialisation result.
  */
 enum CSDL_MSGBOX_INIT_RESULT {
-  OK,                  /**< There is no error */
-  ERROR                /**< there was an undefined error and the
-                            message box couldn't be created */
+  I_OK,                  /**< There is no error */
+  I_ERROR                /**< there was an undefined error and the
+                              message box couldn't be created */
 };
 
 /**
- * An opaque type with implementation-specific data.
+ * An opaque type which holds implementation-specific data.
  */
 typedef struct csdl_msgbox csdl_msgbox;
 
-/**
- * Creates a csdl_msgbox pointer with default values.
+/**/Users/georgeburton/Projects/CPP/CSDL/include/README.md
+ * Creates a csdl_msgbox pointer with uninitialised values.
  * 
- *  @return The created csdl_message box. This pointer is
- *          guaranteed never to be null.
+ *  @return A pointer to the created csdl_message box. This
+ *          pointer is guaranteed never to be null, but it
+ *          must be initialised with csdl_init_msgbox before
+ *          it can be shown.
  */
 csdl_msgbox*            csdl_create_msgbox(void);
 
@@ -81,7 +94,7 @@ csdl_msgbox*            csdl_create_msgbox(void);
  * @param message_box If this parameter is NULL, then this function returns an error. Otherwise,
  *                    the csdl_msgbox will be initialised with the data passed into this function.
  *
- * @param title This parameter is optional, and if NULL is passed, then the
+ * @param title This parameter is optional; if NULL is passed, then the
  *              message box won't have a title
  *
  * @param message Main message box body. If this parameter is NULL, then this function
@@ -90,23 +103,23 @@ csdl_msgbox*            csdl_create_msgbox(void);
  * @param primary_btn_text Text on primary button. If this parameter is NULL, then this
  *                         function returns an error.
  *
- * @param cancel_btn_text This parameter is optional, and if NULL is passed, then the
+ * @param cancel_btn_text This parameter is optional; if NULL is passed, then the
  *                        message box won't have a cancel button.
  *
- * @param altern_btn_text This parameter is optional, and if NULL is passed, then the
+ * @param altern_btn_text This parameter is optional; if NULL is passed, then the
  *                        message box won't have an alternate button.
  *
  * @param alert_type The message box alert type.
  *
  * @return The result of the function.
  */
-CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*     box,
-                                         const wchar_t*   title,
-                                         const wchar_t*   message,
-                                         const wchar_t*   primary_btn_text,
-                                         const wchar_t*   cancel_btn_text,
-                                         const wchar_t*   altern_btn_text,
-                                         CSDL_MSGBOX_TYPE alert_type);
+CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*      box,
+                                         const wchar_t*    title,
+                                         const wchar_t*    message,
+                                         const wchar_t*    primary_btn_text,
+                                         const wchar_t*    cancel_btn_text,
+                                         const wchar_t*    altern_btn_text,
+                                         CSDL_MSGBOX_TYPE  alert_type);
 
 /**
  * Shows the dialog, and blocks the current thread until a user
@@ -126,10 +139,10 @@ CSDL_MSGBOX_USER_RESULT csdl_show_msgbox(const csdl_msgbox* message_box);
  *
  * @param message_box After this function, the pointer is set to NULL.
  */
-void                    csdl_delete_msgbox(const csdl_msgbox* message_box);
+void                    csdl_delete_msgbox(csdl_msgbox* message_box);
 
 #ifdef __cplusplus__
-} // extern "C"
+} /* extern "C" */
 #endif
 
-#endif // CSDL_H
+#endif /* CSDL_H */
