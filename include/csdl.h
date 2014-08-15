@@ -122,7 +122,9 @@ CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*      box,
 
 /**
  * Shows the dialog, and blocks the current thread until a user
- * response is received.
+ * response is received. If the native system requires an application
+ * object to create windows, it will be constructed here the first time
+ * it is run (assuming that it has not been constructed previously).
  *
  * @param message_box The message box to show. This is not modified, and
  *                    can be re-shown again.
