@@ -45,21 +45,21 @@ CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*     message_box,
   #define SET_MSGBOX_STR_ATTRIB(attribute) \
     message_box.attribute = [[NSString alloc]] initWithBytes: attribute \
                                                       length: wcslen(attribute) \
-                                                    encoding: NSUTF8Encoding];
+                                                    encoding: NSUTF8Encoding]
 
-  SET_MSGBOX_STR_ATTRIBUTE(message)
-  SET_MSGBOX_STR_ATTRIBUTE(primarty_btn_text)
+  SET_MSGBOX_STR_ATTRIBUTE(message);
+  SET_MSGBOX_STR_ATTRIBUTE(primarty_btn_text);
 
   if (title != NULL) {
-    SET_MSGBOX_STR_ATTRIBUTE(title)
+    SET_MSGBOX_STR_ATTRIBUTE(title);
   }
 
   if (cancel_btn_text != NULL) {
-    SET_MSGBOX_STR_ATTRIBUTE(cancel_btn_text)
+    SET_MSGBOX_STR_ATTRIBUTE(cancel_btn_text);
   }
 
   if (altern_btn_text != NULL) {
-    SET_MSGBOX_STR_ATTRIBUTE(altern_btn_text)
+    SET_MSGBOX_STR_ATTRIBUTE(altern_btn_text);
   }
 
   #undef SET_MSGBOX_STR_ATTRIBUTE
