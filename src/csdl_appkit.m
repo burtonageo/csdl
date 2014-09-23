@@ -27,13 +27,13 @@ csdl_msgbox* csdl_create_msgbox(void)
   return message_box;
 }
 
-csdl_msgbox_init_result csdl_init_msgbox(csdl_msgbox*     message_box,
-                                         const wchar_t*   title,
-                                         const wchar_t*   message,
-                                         const wchar_t*   primary_btn_text,
-                                         const wchar_t*   cancel_btn_text,
-                                         const wchar_t*   altern_btn_text,
-                                         csdl_msgbox_type alert_type)
+csdl_msgbox_init_result csdl_init_msgbox(csdl_msgbox*         message_box,
+                                         const wchar_t* const title,
+                                         const wchar_t* const message,
+                                         const wchar_t* const primary_btn_text,
+                                         const wchar_t* const cancel_btn_text,
+                                         const wchar_t* const altern_btn_text,
+                                         csdl_msgbox_type     alert_type)
 {
   /* required parameters must not be NULL */
   if (message_box      == NULL ||
@@ -70,7 +70,7 @@ csdl_msgbox_init_result csdl_init_msgbox(csdl_msgbox*     message_box,
   return I_OK;
 }
 
-csdl_msgbox_user_result csdl_show_msgbox(const csdl_msgbox* message_box)
+csdl_msgbox_user_result csdl_show_msgbox(const csdl_msgbox* const message_box)
 {
   if (message_box == NULL) { /* nothing to show */
     return R_NORESPONSE;

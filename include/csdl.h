@@ -115,13 +115,13 @@ csdl_msgbox*            csdl_create_msgbox(void);
  *
  * @return The result of the function.
  */
-csdl_msgbox_init_result csdl_init_msgbox(csdl_msgbox*      box,
-                                         const wchar_t*    title,
-                                         const wchar_t*    message,
-                                         const wchar_t*    primary_btn_text,
-                                         const wchar_t*    cancel_btn_text,
-                                         const wchar_t*    altern_btn_text,
-                                         csdl_msgbox_type  alert_type);
+csdl_msgbox_init_result csdl_init_msgbox(csdl_msgbox*         box,
+                                         const wchar_t* const title,
+                                         const wchar_t* const message,
+                                         const wchar_t* const primary_btn_text,
+                                         const wchar_t* const cancel_btn_text,
+                                         const wchar_t* const altern_btn_text,
+                                         csdl_msgbox_type     alert_type);
 
 /**
  * Shows the dialog, and blocks the current thread until a user
@@ -135,7 +135,7 @@ csdl_msgbox_init_result csdl_init_msgbox(csdl_msgbox*      box,
  * @return User response code. If the csdl_msgbox pointer is NULL,
  *         then a R_NORESPONSE is returned.
  */
-csdl_msgbox_user_result csdl_show_msgbox(const csdl_msgbox* message_box);
+csdl_msgbox_user_result csdl_show_msgbox(const csdl_msgbox* const message_box);
 
 /**
  * Deletes an initialised csdl_msgbox and frees all memory allocated
