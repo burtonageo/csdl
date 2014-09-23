@@ -45,62 +45,81 @@ extern "C" {
  * Represents what sort of message box should be created.
  * If one of these types is not present, then the closest
  * alternative in meaning is used.
+ *
+ * Can take the values:
+ * - T_NOTYPE,
+ * - T_INFO,
+ * - T_WARN,
+ * - T_QUESTION,
+ * - T_ERROR 
  */
-typedef enum csdl_msgbox_type_e {
+typedef enum CsdlMessageboxType_e {
   T_NOTYPE,            /**< a blank message box */
   T_INFO,              /**< an information alert box */
   T_WARN,              /**< a message box with a warning */
   T_QUESTION,          /**< a message box with a question */
   T_ERROR              /**< a message box used to display an error */
-} csdl_msgbox_type;
+} CsdlMessageboxType;
 
 /**
  * Represents which button the program user clicked on
+ *
+ * Can take the values:
+ * - R_PRIMARY,
+ * - R_CANCEL,
+ * - R_ALTERN,
+ * - R_NORESPONSE
  */
-typedef enum csdl_msgbox_user_result_e {
+typedef enum CsdlMessageboxUserResult_e {
   R_PRIMARY,           /**< the ok/action button */
   R_CANCEL,            /**< the cancel button */
   R_ALTERN,            /**< an alternate button */
   R_NORESPONSE         /**< this result means that the user did not have
                             an opportunity to give a response, and should
                             not normally occur. */
-} csdl_msgbox_user_result;
+} CsdlMessageboxUserResult;
 
 /**
  * A message box initialisation result.
+ *
+ * Can take the values:
+ * - I_OK,
+ * - I_ERROR
  */
-typedef enum csdl_msgbox_init_result_e {
+typedef enum CsdlMessageboxInitResult_e {
   I_OK,                  /**< There is no error */
   I_ERROR                /**< there was an undefined error and the
                               message box couldn't be created */
-} csdl_msgbox_init_result;
+} CsdlMessageboxInitResult;
 
 /**
- * An opaque type which holds implementation-specific data.
+ * An opaque struct which holds implementation-specific data.
  */
-typedef struct csdl_msgbox_s csdl_msgbox;
+typedef struct CsdlMessageBox_s CsdlMessageBox;
 
 /**
  * Creates a csdl_msgbox pointer with uninitialised values.
  * 
- *  @return A pointer to the created csdl_message box. This
- *          pointer is guaranteed never to be null, but it
- *          must be initialised with csdl_init_msgbox before
- *          it can be shown.
+ * @return A pointer to the created csdl_message box. This
+ *         pointer is guaranteed never to be null if there
+ *         is enough memory, but it must be initialised with
+ *         csdl_init_msgbox before it can be shown.
  */
-csdl_msgbox*            csdl_create_msgbox(void);
+CsdlMessageBox*             csdl_create_msgbox(void);
 
 /**
  * Initialise a created csdl_msgbox.
  *  
  * @param message_box If this parameter is NULL, then this function returns an error. Otherwise,
- *                    the csdl_msgbox will be initialised with the data passed into this function.
+ *                    the csdl_msgbox will be initialised with the other data passed into this
+ *                    function.
  *
  * @param title This parameter is optional; if NULL is passed, then the
  *              message box won't have a title
  *
  * @param message Main message box body. If this parameter is NULL, then this function
- *                returns an error.
+ *                returns an error, but the message_box parameter will still be a
+ *                valid pointer.
  *
  * @param primary_btn_text Text on primary button. If this parameter is NULL, then this
  *                         function returns an error.
@@ -115,27 +134,28 @@ csdl_msgbox*            csdl_create_msgbox(void);
  *
  * @return The result of the function.
  */
-csdl_msgbox_init_result csdl_init_msgbox(csdl_msgbox*         box,
-                                         const wchar_t* const title,
-                                         const wchar_t* const message,
-                                         const wchar_t* const primary_btn_text,
-                                         const wchar_t* const cancel_btn_text,
-                                         const wchar_t* const altern_btn_text,
-                                         csdl_msgbox_type     alert_type);
+CsdlMessageboxInitResult csdl_init_msgbox(CsdlMessageBox*      box,
+                                          const wchar_t* const title,
+                                          const wchar_t* const message,
+                                          const wchar_t* const primary_btn_text,
+                                          const wchar_t* const cancel_btn_text,
+                                          const wchar_t* const altern_btn_text,
+                                          CsdlMessageboxType   alert_type);
 
 /**
  * Shows the dialog, and blocks the current thread until a user
- * response is received. If the native system requires an application
- * object to create windows, it will be constructed here the first time
- * it is run (assuming that it has not been constructed previously).
+ * response is received. If the native system requires that an application
+ * object has been constructed as a prerequisite to show a dialog window,
+ * it will be constructed here the first time it is run (assuming that it
+ * has not been constructed previously).
  *
  * @param message_box The message box to show. This is not modified, and
  *                    can be re-shown again.
  *
- * @return User response code. If the csdl_msgbox pointer is NULL,
- *         then a R_NORESPONSE is returned.
+ * @return User response code. If the csdl_msgbox pointer is NULL, or there
+ *         is an error, then a R_NORESPONSE is returned.
  */
-csdl_msgbox_user_result csdl_show_msgbox(const csdl_msgbox* const message_box);
+CsdlMessageboxUserResult csdl_show_msgbox(const CsdlMessageBox* const message_box);
 
 /**
  * Deletes an initialised csdl_msgbox and frees all memory allocated
@@ -143,7 +163,7 @@ csdl_msgbox_user_result csdl_show_msgbox(const csdl_msgbox* const message_box);
  *
  * @param message_box After this function, the pointer is set to NULL.
  */
-void                    csdl_delete_msgbox(csdl_msgbox* message_box);
+void                     csdl_delete_msgbox(CsdlMessageBox* message_box);
 
 #ifdef __cplusplus__
 } /* extern "C" */
