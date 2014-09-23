@@ -46,39 +46,39 @@ extern "C" {
  * If one of these types is not present, then the closest
  * alternative in meaning is used.
  */
-enum CSDL_MSGBOX_TYPE {
+typedef enum csdl_msgbox_type_e {
   T_NOTYPE,            /**< a blank message box */
   T_INFO,              /**< an information alert box */
   T_WARN,              /**< a message box with a warning */
-  T_QUESTION           /**< a message box with a question */
+  T_QUESTION,          /**< a message box with a question */
   T_ERROR              /**< a message box used to display an error */
-};
+} csdl_msgbox_type;
 
 /**
  * Represents which button the program user clicked on
  */
-enum CSDL_MSGBOX_USER_RESULT {
+typedef enum csdl_msgbox_user_result_e {
   R_PRIMARY,           /**< the ok/action button */
   R_CANCEL,            /**< the cancel button */
   R_ALTERN,            /**< an alternate button */
   R_NORESPONSE         /**< this result means that the user did not have
                             an opportunity to give a response, and should
                             not normally occur. */
-};
+} csdl_msgbox_user_result;
 
 /**
  * A message box initialisation result.
  */
-enum CSDL_MSGBOX_INIT_RESULT {
+typedef enum csdl_msgbox_init_result_e {
   I_OK,                  /**< There is no error */
   I_ERROR                /**< there was an undefined error and the
                               message box couldn't be created */
-};
+} csdl_msgbox_init_result;
 
 /**
  * An opaque type which holds implementation-specific data.
  */
-typedef struct csdl_msgbox csdl_msgbox;
+typedef struct csdl_msgbox_s csdl_msgbox;
 
 /**
  * Creates a csdl_msgbox pointer with uninitialised values.
@@ -115,13 +115,13 @@ csdl_msgbox*            csdl_create_msgbox(void);
  *
  * @return The result of the function.
  */
-CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*      box,
+csdl_msgbox_init_result csdl_init_msgbox(csdl_msgbox*      box,
                                          const wchar_t*    title,
                                          const wchar_t*    message,
                                          const wchar_t*    primary_btn_text,
                                          const wchar_t*    cancel_btn_text,
                                          const wchar_t*    altern_btn_text,
-                                         CSDL_MSGBOX_TYPE  alert_type);
+                                         csdl_msgbox_type  alert_type);
 
 /**
  * Shows the dialog, and blocks the current thread until a user
@@ -135,7 +135,7 @@ CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*      box,
  * @return User response code. If the csdl_msgbox pointer is NULL,
  *         then a R_NORESPONSE is returned.
  */
-CSDL_MSGBOX_USER_RESULT csdl_show_msgbox(const csdl_msgbox* message_box);
+csdl_msgbox_user_result csdl_show_msgbox(const csdl_msgbox* message_box);
 
 /**
  * Deletes an initialised csdl_msgbox and frees all memory allocated

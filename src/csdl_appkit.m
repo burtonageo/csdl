@@ -1,38 +1,39 @@
 #include "csdl.h"
 
-#include <cocoa/cocoa.h>
+#include <Cocoa/Cocoa.h>
+//#include <Foundation/Foundation.h>
 
-struct csdl_msgbox {
+struct csdl_msgbox_s {
   NSString* title,
-            message,
-            primary_btn_text,
-            cancel_btn_text,
-            alert_btn_text;
+          * message,
+          * primary_btn_text,
+          * cancel_btn_text,
+          * altern_btn_text;
 
-  CSDL_MSGBOX_TYPE alert_type;
+  csdl_msgbox_type alert_type;
 };
 
 csdl_msgbox* csdl_create_msgbox(void)
 {
-  struct csdl_msgbox* message_box = malloc(sizeof(struct csdl_msgbox));
+  csdl_msgbox* message_box = malloc(sizeof(csdl_msgbox));
 
-  message_box.title = nil;
-  message_box.message = nil;
-  message_box.primary_btn_text = nil;
-  message_box.cancel_btn_text = nil;
-  message_box.alert_btn_text = nil;
-  message_box.alert_type = T_NOTYPE;
+  message_box->title = nil;
+  message_box->message = nil;
+  message_box->primary_btn_text = nil;
+  message_box->cancel_btn_text = nil;
+  message_box->altern_btn_text = nil;
+  message_box->alert_type = T_NOTYPE;
 
   return message_box;
 }
 
-CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*     message_box,
+csdl_msgbox_init_result csdl_init_msgbox(csdl_msgbox*     message_box,
                                          const wchar_t*   title,
                                          const wchar_t*   message,
                                          const wchar_t*   primary_btn_text,
                                          const wchar_t*   cancel_btn_text,
                                          const wchar_t*   altern_btn_text,
-                                         CSDL_MSGBOX_TYPE alert_type)
+                                         csdl_msgbox_type alert_type)
 {
   /* required parameters must not be NULL */
   if (message_box      == NULL ||
@@ -42,13 +43,13 @@ CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*     message_box,
   }
 
   /* macro to set a string field on a message_box struct for convenience */
-  #define SET_MSGBOX_STR_ATTRIB(attribute) \
-    message_box.attribute = [[NSString alloc]] initWithBytes: attribute \
+  #define SET_MSGBOX_STR_ATTRIBUTE(attribute) \
+    message_box->attribute = [[NSString alloc] initWithBytes: attribute \
                                                       length: wcslen(attribute) \
-                                                    encoding: NSUTF8Encoding]
+                                                    encoding: NSUTF8StringEncoding]
 
   SET_MSGBOX_STR_ATTRIBUTE(message);
-  SET_MSGBOX_STR_ATTRIBUTE(primarty_btn_text);
+  SET_MSGBOX_STR_ATTRIBUTE(primary_btn_text);
 
   if (title != NULL) {
     SET_MSGBOX_STR_ATTRIBUTE(title);
@@ -64,12 +65,12 @@ CSDL_MSGBOX_INIT_RESULT csdl_init_msgbox(csdl_msgbox*     message_box,
 
   #undef SET_MSGBOX_STR_ATTRIBUTE
 
-  message_box.alert_type = alert_type;
+  message_box->alert_type = alert_type;
 
   return I_OK;
 }
 
-CSDL_MSGBOX_USER_RESULT csdl_show_msgbox(const csdl_msgbox* message_box)
+csdl_msgbox_user_result csdl_show_msgbox(const csdl_msgbox* message_box)
 {
   if (message_box == NULL) { /* nothing to show */
     return R_NORESPONSE;
@@ -86,20 +87,20 @@ CSDL_MSGBOX_USER_RESULT csdl_show_msgbox(const csdl_msgbox* message_box)
   }
 
   NSAlert* alert = [NSAlert new];
-  alert.messageText = message_box.title;
-  alert.informativeText = message_box.message;
+  alert.messageText = message_box->title;
+  alert.informativeText = message_box->message;
 
-  [alert addButtonWithTitle: message_box.primary_btn_text];
+  [alert addButtonWithTitle: message_box->primary_btn_text];
 
-  if (message_box.cancel_btn_text != nil) {
-    [alert addButtonWithTitle: message_box.cancel_btn_text];
+  if (message_box->cancel_btn_text != nil) {
+    [alert addButtonWithTitle: message_box->cancel_btn_text];
   }
-  if (message_box.altern_btn_text != nil) {
-    [alert addButtonWithTitle: message_box.altern_btn_text];
+  if (message_box->altern_btn_text != nil) {
+    [alert addButtonWithTitle: message_box->altern_btn_text];
   }
 
   NSAlertStyle cocoa_alert_style;
-  switch (message_box.alert_type) {
+  switch (message_box->alert_type) {
     case T_WARN:
       cocoa_alert_style = NSWarningAlertStyle;
       break;
@@ -109,7 +110,7 @@ CSDL_MSGBOX_USER_RESULT csdl_show_msgbox(const csdl_msgbox* message_box)
     case T_INFO:
     case T_QUESTION: /* fall-through */
     case T_NOTYPE:   /* fall-through */
-      cocoa_alert_style = NSInformationalAlertStyle
+      cocoa_alert_style = NSInformationalAlertStyle;
       break;
   }
 
@@ -137,11 +138,11 @@ void csdl_delete_msgbox(csdl_msgbox* message_box)
     return;
   }
 
-  [message_box.title release];
-  [message_box.message release];
-  [message_box.primary_btn_text release];
-  [message_box.cancel_btn_text release];
-  [message_box.altern_btn_text release];
+  [message_box->title release];
+  [message_box->message release];
+  [message_box->primary_btn_text release];
+  [message_box->cancel_btn_text release];
+  [message_box->altern_btn_text release];
 
   free(message_box);
   message_box = NULL;
