@@ -14,7 +14,7 @@ struct CsdlMessageBox_s {
 
 CsdlMessageBox* csdl_create_msgbox(void)
 {
-    CsdlMessageBox* message_box = malloc(sizeof(csdl_msgbox));
+    CsdlMessageBox* message_box = malloc(sizeof(CsdlMessageBox));
 
     if ( message_box != NULL ) {
         message_box->title            = nil;
@@ -51,21 +51,12 @@ CsdlMessageboxInitResult csdl_init_msgbox(CsdlMessageBox*      message_box,
         return I_ERROR;
     }
 
-    message_box->alert_type       = alert_type;
+    message_box->title            = wcs_to_nsstring(title);
     message_box->message          = wcs_to_nsstring(message);
     message_box->primary_btn_text = wcs_to_nsstring(primary_btn_text);
-
-    if ( title != NULL ) {
-        message_box->title = wcs_to_nsstring(title);
-    }
-
-    if ( cancel_btn_text != NULL ) {
-        message_box->cancel_btn_text = wcs_to_nsstring(cancel_btn_text);
-    }
-
-    if ( altern_btn_text != NULL ) {
-        message_box->altern_btn_text = wcs_to_nsstring(altern_btn_text);
-    }
+    message_box->cancel_btn_text  = wcs_to_nsstring(cancel_btn_text);
+    message_box->altern_btn_text  = wcs_to_nsstring(altern_btn_text);
+    message_box->alert_type       = alert_type;    
 
     return I_OK;
 }
@@ -76,31 +67,32 @@ CsdlMessageboxUserResult csdl_show_msgbox(const CsdlMessageBox* const message_bo
         return R_NORESPONSE;
     }
 
-    NSApplication* application = [NSApplication sharedApplication];
-    if ( application == nil ) { /* panic instead of handling errors properly
-                                   (this should be very rare) */
+    NSApplication* app = [NSApplication sharedApplication];
+    if ( app == nil ) { /* panic instead of handling errors properly       
+                           (this should be very rare) */
+
         return R_NORESPONSE;
     }
 
-    if ( application.delegate != nil ) {
-        /* set the  application to the front */
-    } else {
+    if ( app.delegate == nil ) {
         /* create our own app delegate so that
            our alert can get focus */
+        // [app activateIgnoringOtherApps:YES];
+    } else {
+        /* Bring our app to the foreground so that our
+           dialog has focus */
+        [app activateIgnoringOtherApps:YES];
     }
 
     NSAlert* alert = [NSAlert new];
+
     alert.messageText = message_box->title;
     alert.informativeText = message_box->message;
 
     [alert addButtonWithTitle: message_box->primary_btn_text];
-
-    if ( message_box->cancel_btn_text != nil ) {
-        [alert addButtonWithTitle: message_box->cancel_btn_text];
-    }
-    if ( message_box->altern_btn_text != nil ) {
-        [alert addButtonWithTitle: message_box->altern_btn_text];
-    }
+    [alert addButtonWithTitle: message_box->cancel_btn_text];
+    [alert addButtonWithTitle: message_box->altern_btn_text];
+    
 
     NSAlertStyle cocoa_alert_style;
     switch ( message_box->alert_type ) {
