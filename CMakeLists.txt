@@ -12,6 +12,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   find_path (COCOA_INCLUDE_DIR Cocoa/Cocoa.h)
 
   include_directories ("${COCOA_INCLUDE_DIR}/Headers")
+  set (CSDL_LIBRARIES ${COCOA_FRAMEWORK})
 endif()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -24,4 +25,4 @@ endif()
 
 include_directories (${CSDL_INCLUDE_DIR})
 add_library (${PROJECT_NAME} ${SOURCES})
-target_link_libraries (${PROJECT_NAME} ${COCOA_FRAMEWORK})
+target_link_libraries (${PROJECT_NAME} ${CSDL_LIBRARIES})
