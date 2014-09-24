@@ -2,33 +2,43 @@
 
 #include <Cocoa/Cocoa.h>
 
-struct CsdlMessageBox_s {
+struct CsdlDialog_s {
     NSString* title,
             * message,
             * primary_btn_text,
             * cancel_btn_text,
             * altern_btn_text;
 
-    CsdlMessageboxType alert_type;
+    CsdlDialogType alert_type;
 };
 
-CsdlMessageBox* csdl_create_msgbox(void)
-{
-    CsdlMessageBox* message_box = malloc(sizeof(CsdlMessageBox));
 
-    if ( message_box != NULL ) {
-        message_box->title            = nil;
-        message_box->message          = nil;
-        message_box->primary_btn_text = nil;
-        message_box->cancel_btn_text  = nil;
-        message_box->altern_btn_text  = nil;
-        message_box->alert_type       = T_NOTYPE;
+
+CsdlDialog* csdl_create_dialog(void)
+{
+    CsdlDialog* dialog = malloc(sizeof(CsdlDialog));
+
+    if ( dialog != NULL ) {
+        dialog->title            = nil;
+        dialog->message          = nil;
+        dialog->primary_btn_text = nil;
+        dialog->cancel_btn_text  = nil;
+        dialog->altern_btn_text  = nil;
+        dialog->alert_type       = T_NOTYPE;
     }
 
-    return message_box;
+    return dialog;
 }
 
-static NSString* wcs_to_nsstring(const wchar_t* string) {
+
+
+/**
+ * A small utility function to convert from a wide string to
+ * an NSString*
+ *
+ */
+static NSString* wcs_to_nsstring(const wchar_t* string)
+{
     return string == NULL /* calling wcslen on NULL causes segfault 11 */
         ? @""
         : [[NSString alloc] initWithBytes: (const void*)string
@@ -36,41 +46,45 @@ static NSString* wcs_to_nsstring(const wchar_t* string) {
                                  encoding: NSUTF8StringEncoding];
 }
 
-CsdlMessageboxInitResult csdl_init_msgbox(CsdlMessageBox*      message_box,
-                                          const wchar_t* const title,
-                                          const wchar_t* const message,
-                                          const wchar_t* const primary_btn_text,
-                                          const wchar_t* const cancel_btn_text,
-                                          const wchar_t* const altern_btn_text,
-                                          CsdlMessageboxType   alert_type)
+
+
+CsdlDialogInitResult csdl_init_dialog(CsdlDialog*          dialog,
+                                      const wchar_t* const title,
+                                      const wchar_t* const message,
+                                      const wchar_t* const primary_btn_text,
+                                      const wchar_t* const cancel_btn_text,
+                                      const wchar_t* const altern_btn_text,
+                                      CsdlDialogType       dialog_type)
 {
     /* required parameters must not be NULL */
-    if ( message_box      == NULL ||
+    if ( dialog           == NULL ||
          message          == NULL ||
          primary_btn_text == NULL ) {
         return I_ERROR;
     }
 
-    message_box->title            = wcs_to_nsstring(title);
-    message_box->message          = wcs_to_nsstring(message);
-    message_box->primary_btn_text = wcs_to_nsstring(primary_btn_text);
-    message_box->cancel_btn_text  = wcs_to_nsstring(cancel_btn_text);
-    message_box->altern_btn_text  = wcs_to_nsstring(altern_btn_text);
-    message_box->alert_type       = alert_type;    
+    dialog->title            = wcs_to_nsstring(title);
+    dialog->message          = wcs_to_nsstring(message);
+    dialog->primary_btn_text = wcs_to_nsstring(primary_btn_text);
+    dialog->cancel_btn_text  = wcs_to_nsstring(cancel_btn_text);
+    dialog->altern_btn_text  = wcs_to_nsstring(altern_btn_text);
+    dialog->alert_type       = dialog_type;    
 
     return I_OK;
 }
 
-CsdlMessageboxUserResult csdl_show_msgbox(const CsdlMessageBox* const message_box)
+
+
+CsdlDialogUserResult csdl_show_dialog(const CsdlDialog* const dialog)
 {
-    if ( message_box == NULL ) { /* nothing to show */
+    if ( dialog == NULL ) { /* nothing to show */
         return R_NORESPONSE;
     }
 
     NSApplication* app = [NSApplication sharedApplication];
-    if ( app == nil ) { /* panic instead of handling errors properly       
-                           (this should be very rare) */
-
+    if ( app == nil ) {
+        /* panic instead of handling errors properly       
+           (this should be very rare) */
         return R_NORESPONSE;
     }
 
@@ -86,16 +100,15 @@ CsdlMessageboxUserResult csdl_show_msgbox(const CsdlMessageBox* const message_bo
 
     NSAlert* alert = [NSAlert new];
 
-    alert.messageText = message_box->title;
-    alert.informativeText = message_box->message;
+    alert.messageText     = dialog->title;
+    alert.informativeText = dialog->message;
 
-    [alert addButtonWithTitle: message_box->primary_btn_text];
-    [alert addButtonWithTitle: message_box->cancel_btn_text];
-    [alert addButtonWithTitle: message_box->altern_btn_text];
-    
+    [alert addButtonWithTitle: dialog->primary_btn_text];
+    [alert addButtonWithTitle: dialog->cancel_btn_text];
+    [alert addButtonWithTitle: dialog->altern_btn_text];
 
     NSAlertStyle cocoa_alert_style;
-    switch ( message_box->alert_type ) {
+    switch ( dialog->alert_type ) {
         case T_WARN:
             cocoa_alert_style = NSWarningAlertStyle;
             break;
@@ -105,6 +118,7 @@ CsdlMessageboxUserResult csdl_show_msgbox(const CsdlMessageBox* const message_bo
         case T_INFO:
         case T_QUESTION: /* fall-through */
         case T_NOTYPE:   /* fall-through */
+        default:         /* fall-through */
             cocoa_alert_style = NSInformationalAlertStyle;
             break;
     }
@@ -112,7 +126,10 @@ CsdlMessageboxUserResult csdl_show_msgbox(const CsdlMessageBox* const message_bo
     alert.alertStyle = cocoa_alert_style;
 
     NSInteger result = [alert runModal];
-    [alert release];   /* destroy the NSAlert! */
+
+    #if !__has_feature(objc_arc)
+        [alert release];   /* destroy the NSAlert! */
+    #endif
 
     switch ( result ) {
         case NSAlertThirdButtonReturn:
@@ -127,19 +144,18 @@ CsdlMessageboxUserResult csdl_show_msgbox(const CsdlMessageBox* const message_bo
     }
 }
 
-void csdl_delete_msgbox(CsdlMessageBox* message_box)
+
+
+void csdl_delete_dialog(CsdlDialog* dialog)
 {
-    if ( message_box == NULL ) {
-        return;
+    if ( dialog != NULL ) {
+        [dialog->title release];
+        [dialog->message release];
+        [dialog->primary_btn_text release];
+        [dialog->cancel_btn_text release];
+        [dialog->altern_btn_text release];
+    
+        free(dialog);
+        dialog = NULL;
     }
-
-    [message_box->title release];
-    [message_box->message release];
-    [message_box->primary_btn_text release];
-    [message_box->cancel_btn_text release];
-    [message_box->altern_btn_text release];
-
-    free(message_box);
-    message_box = NULL;
 }
-
