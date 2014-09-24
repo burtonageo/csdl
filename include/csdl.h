@@ -54,11 +54,11 @@ extern "C" {
  * - T_ERROR 
  */
 typedef enum CsdlDialogType_e {
-  T_NOTYPE,            /**< a blank message box */
-  T_INFO,              /**< an information alert box */
-  T_WARN,              /**< a message box with a warning */
-  T_QUESTION,          /**< a message box with a question */
-  T_ERROR              /**< a message box used to display an error */
+    T_NOTYPE,            /**< a blank message box */
+    T_INFO,              /**< an information alert box */
+    T_WARN,              /**< a message box with a warning */
+    T_QUESTION,          /**< a message box with a question */
+    T_ERROR              /**< a message box used to display an error */
 } CsdlDialogType;
 
 
@@ -73,12 +73,12 @@ typedef enum CsdlDialogType_e {
  * - R_NORESPONSE
  */
 typedef enum CsdlDialogUserResult_e {
-  R_PRIMARY,           /**< the ok/action button */
-  R_CANCEL,            /**< the cancel button */
-  R_ALTERN,            /**< an alternate button */
-  R_NORESPONSE         /**< this result means that the user did not have
-                            an opportunity to give a response, and should
-                            not normally occur. */
+    R_PRIMARY,           /**< the ok/action button */
+    R_CANCEL,            /**< the cancel button */
+    R_ALTERN,            /**< an alternate button */
+    R_NORESPONSE         /**< this result means that the user did not have
+                              an opportunity to give a response, and should
+                              not normally occur. */
 } CsdlDialogUserResult;
 
 
@@ -91,9 +91,9 @@ typedef enum CsdlDialogUserResult_e {
  * - I_ERROR
  */
 typedef enum CsdlDialogInitResult_e {
-  I_OK,                  /**< There is no error */
-  I_ERROR                /**< there was an undefined error and the
-                              message box couldn't be created */
+    I_OK,                  /**< There is no error */
+    I_ERROR                /**< there was an undefined error and the
+                                message box couldn't be created */
 } CsdlDialogInitResult;
 
 
