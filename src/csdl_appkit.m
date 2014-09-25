@@ -146,10 +146,14 @@ static void set_nsalert_style(NSAlert* alert, CsdlDialogType dlg_type)
 
     switch ( dlg_type ) {
         case T_WARN:
-            alert_style = NSWarningAlertStyle;
-            break;
-        case T_ERROR:
+        case T_ERROR: /* fall-through */
             alert_style = NSCriticalAlertStyle;
+            /* even though NSWarningAlertStyle exists, I think
+               that it is too similar in appearance to
+               NSInformationalAlertStyle, and I think that
+               NSCriticalAlertStyle more closely matches what
+               is intended by T_WARN */
+
             break;
         case T_INFO:
         case T_QUESTION: /* fall-through */
