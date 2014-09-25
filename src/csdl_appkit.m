@@ -32,21 +32,7 @@ CsdlDialog* csdl_create_dialog(void)
 
 
 
-/**
- * A small utility function to convert from a wide string to
- * an NSString*
- *
- */
-static NSString* wcs_to_nsstring(const wchar_t* string)
-{
-    return string == NULL /* calling wcslen on NULL causes segfault 11 */
-        ? @""
-        : [[NSString alloc] initWithBytes: (const void*)string
-                                   length: sizeof(wchar_t) * wcslen(string)
-                                 encoding: NSUTF8StringEncoding];
-}
-
-
+static NSString* wcs_to_nsstring(const wchar_t*);
 
 CsdlDialogInitResult csdl_init_dialog(CsdlDialog*          dialog,
                                       const wchar_t* const title,
@@ -75,27 +61,14 @@ CsdlDialogInitResult csdl_init_dialog(CsdlDialog*          dialog,
 
 
 
+static void set_nsalert_style(NSAlert*, CsdlDialogType);
+static BOOL activate_app(void);
+
 CsdlDialogUserResult csdl_show_dialog(const CsdlDialog* const dialog)
 {
-    if ( dialog == NULL ) { /* nothing to show */
+    if ( dialog == NULL ||
+         !activate_app() ) { /* nothing to show */
         return R_NORESPONSE;
-    }
-
-    NSApplication* app = [NSApplication sharedApplication];
-    if ( app == nil ) {
-        /* panic instead of handling errors properly       
-           (this should be very rare) */
-        return R_NORESPONSE;
-    }
-
-    if ( app.delegate == nil ) {
-        /* create our own app delegate so that
-           our alert can get focus */
-        // [app activateIgnoringOtherApps:YES];
-    } else {
-        /* Bring our app to the foreground so that our
-           dialog has focus */
-        [app activateIgnoringOtherApps:YES];
     }
 
     NSAlert* alert = [NSAlert new];
@@ -106,29 +79,12 @@ CsdlDialogUserResult csdl_show_dialog(const CsdlDialog* const dialog)
     [alert addButtonWithTitle: dialog->primary_btn_text];
     [alert addButtonWithTitle: dialog->cancel_btn_text];
     [alert addButtonWithTitle: dialog->altern_btn_text];
-
-    NSAlertStyle cocoa_alert_style;
-    switch ( dialog->alert_type ) {
-        case T_WARN:
-            cocoa_alert_style = NSWarningAlertStyle;
-            break;
-        case T_ERROR:
-            cocoa_alert_style = NSCriticalAlertStyle;
-            break;
-        case T_INFO:
-        case T_QUESTION: /* fall-through */
-        case T_NOTYPE:   /* fall-through */
-        default:         /* fall-through */
-            cocoa_alert_style = NSInformationalAlertStyle;
-            break;
-    }
-
-    alert.alertStyle = cocoa_alert_style;
+    set_nsalert_style(alert, dialog->alert_type);
 
     NSInteger result = [alert runModal];
 
     #if !__has_feature(objc_arc)
-        [alert release];   /* destroy the NSAlert! */
+            [alert release];
     #endif
 
     switch ( result ) {
@@ -159,3 +115,77 @@ void csdl_delete_dialog(CsdlDialog* dialog)
         dialog = NULL;
     }
 }
+
+
+
+/******************************************************************************
+ * Internal helper functions
+ ******************************************************************************/
+
+/**
+ * A small utility function to convert from a wide string to
+ * an NSString*. Even if the input string is NULL, the output
+ * will never be nil.
+ */
+static NSString* wcs_to_nsstring(const wchar_t* string)
+{
+    return string == NULL /* calling wcslen on NULL causes segfault 11 */
+        ? @""
+        : [[NSString alloc] initWithBytes: (const void*)string
+                                   length: sizeof(wchar_t) * wcslen(string)
+                                 encoding: NSUTF8StringEncoding];
+}
+
+/**
+ * Sets the NSAlert's style to the cocoa equivelent
+ * of the CsdlDialogType.
+ */
+static void set_nsalert_style(NSAlert* alert, CsdlDialogType dlg_type)
+{
+    NSAlertStyle alert_style;
+
+    switch ( dlg_type ) {
+        case T_WARN:
+            alert_style = NSWarningAlertStyle;
+            break;
+        case T_ERROR:
+            alert_style = NSCriticalAlertStyle;
+            break;
+        case T_INFO:
+        case T_QUESTION: /* fall-through */
+        case T_NOTYPE:   /* fall-through */
+            alert_style = NSInformationalAlertStyle;
+            break;
+    }
+
+    alert.alertStyle = alert_style;
+}
+
+/**
+ * Bring the application forward into the foreground so
+ * that our dialog is in focus. If the app could not
+ * be found, then there is something seriously wrong,
+ * and we should return NO. Otherwise, everything is
+ * oK, and return YES.
+ */
+static BOOL activate_app(void)
+{
+    NSApplication* app = [NSApplication sharedApplication];
+    if ( app == nil ) {
+        /* panic instead of handling errors properly       
+           (this should be very rare) */
+        return NO;
+    }
+
+    if ( app.delegate == nil ) {
+        /* create our own app delegate */
+        //...
+    }
+
+    /* Bring our app to the foreground so that our
+       dialog has focus */
+    [app activateIgnoringOtherApps:YES];
+
+    return YES;
+}
+

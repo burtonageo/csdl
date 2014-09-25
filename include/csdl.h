@@ -33,13 +33,15 @@
 #ifndef CSDL_H
 #define CSDL_H
 
-#ifndef __cplusplus__
+#ifndef __cplusplus
 #include <wchar.h>
 #endif
 
-#ifdef __cplusplus__
+#ifdef __cplusplus
 extern "C" {
 #endif
+
+
 
 /**
  * Represents what sort of dialog should be created. If
@@ -171,7 +173,6 @@ CsdlDialogUserResult csdl_show_dialog(const CsdlDialog* const dialog);
 
 
 
-
 /**
  * Deletes an initialised csdl_msgbox and frees all memory allocated
  * by it.
@@ -182,7 +183,7 @@ void                 csdl_delete_dialog(CsdlDialog* dialog);
 
 
 
-#ifdef __cplusplus__
+#ifdef __cplusplus
 } /* extern "C" */
 #endif
 
