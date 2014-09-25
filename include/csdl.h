@@ -183,6 +183,28 @@ void                 csdl_delete_dialog(CsdlDialog* dialog);
 
 
 
+/**
+ * Identical to the Javascript alert() function: creates a dialog
+ * with a single button.
+ *
+ * @param title Dialog title
+ * @param message Dialog message
+ * @param btn_text Text on the button of the dialog
+ * @param dialog_type Type of dialog
+ */
+void                 csdl_alert(const wchar_t* const title,
+                                const wchar_t* const message,
+                                const wchar_t* const btn_text,
+                                CsdlDialogType dialog_type)
+{
+    CsdlDialog* dialog = csdl_create_dialog();
+    csdl_init_dialog(dialog, title, message, btn_text, NULL, NULL, dialog_type);
+    csdl_show_dialog(dialog);
+    csdl_delete_dialog(dialog);
+}
+
+
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
