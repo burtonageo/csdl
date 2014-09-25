@@ -2,7 +2,7 @@
 
 #include <Cocoa/Cocoa.h>
 
-struct CsdlDialog_s {
+struct CsdlDialog_ {
     NSString* title,
             * message,
             * primary_btn_text,

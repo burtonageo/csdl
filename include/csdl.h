@@ -55,7 +55,7 @@ extern "C" {
  * - T_QUESTION,
  * - T_ERROR 
  */
-typedef enum CsdlDialogType_e {
+typedef enum CsdlDialogType_ {
     T_NOTYPE,            /**< a blank message box */
     T_INFO,              /**< an information alert box */
     T_WARN,              /**< a message box with a warning */
@@ -74,7 +74,7 @@ typedef enum CsdlDialogType_e {
  * - R_ALTERN,
  * - R_NORESPONSE
  */
-typedef enum CsdlDialogUserResult_e {
+typedef enum CsdlDialogUserResult_ {
     R_PRIMARY,           /**< the ok/action button */
     R_CANCEL,            /**< the cancel button */
     R_ALTERN,            /**< an alternate button */
@@ -92,7 +92,7 @@ typedef enum CsdlDialogUserResult_e {
  * - I_OK,
  * - I_ERROR
  */
-typedef enum CsdlDialogInitResult_e {
+typedef enum CsdlDialogInitResult_ {
     I_OK,                  /**< There is no error */
     I_ERROR                /**< there was an undefined error and the
                                 message box couldn't be created */
@@ -103,7 +103,7 @@ typedef enum CsdlDialogInitResult_e {
 /**
  * An opaque struct which holds implementation-specific data.
  */
-typedef struct CsdlDialog_s CsdlDialog;
+typedef struct CsdlDialog_ CsdlDialog;
 
 
 
