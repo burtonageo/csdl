@@ -42,7 +42,6 @@ extern "C" {
 #endif
 
 
-
 /**
  * Represents what sort of dialog should be created. If
  * one of these types is not present, then the closest
@@ -56,13 +55,12 @@ extern "C" {
  * - T_ERROR 
  */
 typedef enum CsdlDialogType_ {
-    T_NOTYPE,            /**< a blank message box */
-    T_INFO,              /**< an information alert box */
-    T_WARN,              /**< a message box with a warning */
-    T_QUESTION,          /**< a message box with a question */
-    T_ERROR              /**< a message box used to display an error */
+    T_NOTYPE,            /**< Blank message box */
+    T_INFO,              /**< An information alert box */
+    T_WARN,              /**< Message box with a warning */
+    T_QUESTION,          /**< Message box with a question */
+    T_ERROR              /**< Message box used to display an error */
 } CsdlDialogType;
-
 
 
 /**
@@ -75,14 +73,12 @@ typedef enum CsdlDialogType_ {
  * - R_NORESPONSE
  */
 typedef enum CsdlDialogUserResult_ {
-    R_PRIMARY,           /**< the ok/action button */
-    R_CANCEL,            /**< the cancel button */
-    R_ALTERN,            /**< an alternate button */
-    R_NORESPONSE         /**< this result means that the user did not have
-                              an opportunity to give a response, and should
-                              not normally occur. */
+    R_PRIMARY,           /**< The ok/action button */
+    R_CANCEL,            /**< The cancel button */
+    R_ALTERN,            /**< An alternate button */
+    R_NORESPONSE         /**< The user did not have an opportunity to give
+                              a response, and should not normally occur. */
 } CsdlDialogUserResult;
-
 
 
 /**
@@ -94,17 +90,15 @@ typedef enum CsdlDialogUserResult_ {
  */
 typedef enum CsdlDialogInitResult_ {
     I_OK,                  /**< There is no error */
-    I_ERROR                /**< there was an undefined error and the
+    I_ERROR                /**< There was an undefined error and the
                                 message box couldn't be created */
 } CsdlDialogInitResult;
-
 
 
 /**
  * An opaque struct which holds implementation-specific data.
  */
 typedef struct CsdlDialog_ CsdlDialog;
-
 
 
 /**
@@ -116,7 +110,6 @@ typedef struct CsdlDialog_ CsdlDialog;
  *         csdl_init_dialog before it can be shown.
  */
 CsdlDialog*          csdl_create_dialog(void);
-
 
 
 /**
@@ -155,7 +148,6 @@ CsdlDialogInitResult csdl_init_dialog(CsdlDialog*          dialog,
                                       CsdlDialogType       alert_type);
 
 
-
 /**
  * Shows the dialog, and blocks the current thread until a user
  * response is received. If the native system requires that an application
@@ -172,7 +164,6 @@ CsdlDialogInitResult csdl_init_dialog(CsdlDialog*          dialog,
 CsdlDialogUserResult csdl_show_dialog(const CsdlDialog* const dialog);
 
 
-
 /**
  * Deletes an initialised csdl_msgbox and frees all memory allocated
  * by it.
@@ -180,7 +171,6 @@ CsdlDialogUserResult csdl_show_dialog(const CsdlDialog* const dialog);
  * @param message_box After this function, the pointer is set to NULL.
  */
 void                 csdl_delete_dialog(CsdlDialog* dialog);
-
 
 
 /**
@@ -198,11 +188,11 @@ void                 csdl_alert(const wchar_t* const title,
                                 CsdlDialogType dialog_type)
 {
     CsdlDialog* dialog = csdl_create_dialog();
+
     csdl_init_dialog(dialog, title, message, btn_text, NULL, NULL, dialog_type);
     csdl_show_dialog(dialog);
     csdl_delete_dialog(dialog);
 }
-
 
 
 #ifdef __cplusplus
