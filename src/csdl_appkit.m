@@ -36,7 +36,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-struct CsdlDialog_ {
+struct CsdlDialog {
     NSString* title,
             * message,
             * primary_btn_text,
